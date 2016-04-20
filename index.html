@@ -1,98 +1,135 @@
 <html>
-	<head>
-		<script src="js/mail-generator.js"></script>
-		<link href="css/style.css" rel="stylesheet" media="screen">
-    <script>
-      window.onload = function(){
-		  usrn = prompt ('what is the password?');
-		  if (usrn === 'abc'){
-		  }
-		  else{
-			 window.close();
-		  }
-        // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE. 
-        // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
-	  loadGeeMails();
-	  //console.log(window.geemails[2].sender)
-	  //document.getElementById("sender").innerHTML += '<p>' + window.geemails[1].sender + '</p>';
 
-	  //  ***  rem to add a variable to subtract read emails
-	  
-	  mailCount = 0;
-	  mailCheck = [];
-	  
-	  document.getElementById('main').innerText = "Unread Messages: " + (window.geemails.length / 2) + " ";
-	  
-	  for (var kl = 0; kl < 10; kl++){
-	      var createDiv = document.createElement("div");
-	      createDiv.setAttribute("id", kl);
-	      document.body.appendChild(createDiv);
-	      document.getElementById("main").innerHTML += '<p />';
-	  };
-	  
-	  for (var km = 0; km < 10; km++){
-	      var createButton = document.createElement("button");
-		  createButton.setAttribute("onclick","mread("+ km +")");
-	      var createMess = document.createTextNode(window.geemails[km].sender);
-		  window.geemails[km].mailOpen = false;
-	      var divId = document.getElementById(km);
-	      divId.appendChild(createButton);
-	      createButton.appendChild(createMess);
-	  };
-	  
-	  // *** make for loops do gmail length /2 ?
-	  for (var kn = 0; kn < 10; kn++){
-		  var createDate = document.createElement("text");
-		  createDate.style.fontSize= "55%";
-		  var createDateText = document.createTextNode(window.geemails[kn].date);
-		  var divId = document.getElementById(kn);
-		  divId.appendChild(createDate);
-		  createDate.appendChild(createDateText);
-	  };
-	  
-	  for (var ko = 0; ko < 10; ko++){
-		  var createSubject = document.createElement("text");
-		  var createSubjectText = document.createTextNode(window.geemails[ko].subject);
-		  var subjectId = document.getElementById(ko);
-		  subjectId.appendChild(createSubject);
-		  createSubject.appendChild(createSubjectText);
-	  };
-	  
-	  mOpen = function (k)
-	  {
-		   var divOpen = document.getElementById(k);
-		   var messageOpen = document.createElement('div');
-		   var createMessageText = document.createTextNode(window.geemails[k].body);
-		   messageOpen.id = "opened";
-		   divOpen.appendChild(messageOpen);
-		   messageOpen.appendChild(createMessageText);
-	  };
-	  
-	  mread = function (e)
-	  {
-		if (window.geemails[e].mailOpen === true){
-			window.geemails[e].mailOpen = false;
-			var closeMessage = document.getElementById('opened');
-			closeMessage.parentNode.removeChild(opened);
-		}
-		else if (mailCheck.indexOf(e) === -1){
-		    mailCheck.push(e);
-		    mailCount++;
-		    document.getElementById('main').innerText = "Unread Messages: " + ((window.geemails.length / 2) - mailCount);
-		    window.geemails[e].mailOpen = true;
-			mOpen(e);
-		}
-		else{
-			mOpen(e);
-		    window.geemails[e].mailOpen = true;
-		};
-	  };
-	  };
+<head>
+    <script src="js/mail-generator.js"></script>
+    <link href="css/style.css" rel="stylesheet" media="screen">
+    <script>
+        window.onload = function() {
+
+            usrn = prompt('what is the password?  hint: it is abc');
+            if (usrn === 'abc') {} else {
+                window.close();
+            } 
+
+            loadGeeMails();
+            mailCount = 0;
+            mailCheck = [];
+			initialLength = window.geemails.length / 2;
+			nMC = 9;
+			newEmail = {};
+
+            document.getElementById('main').innerText = "Unread Messages: " + (window.geemails.length / 2) + " ";
+            for (var km = 0; km < initialLength; km++) {
+                var createDiv = document.createElement("div");
+                createDiv.setAttribute("id", km);
+                document.body.appendChild(createDiv);
+                document.getElementById("main").innerHTML += '<p />';
+            };
+
+            for (var km = 0; km < initialLength; km++) {
+                var createButton = document.createElement("button");
+                createButton.setAttribute("onclick", "mread(" + km + ")");
+                var createMess = document.createTextNode(window.geemails[km].sender);
+                window.geemails[km].mailOpen = false;
+                var divId = document.getElementById(km);
+                divId.appendChild(createButton);
+                createButton.appendChild(createMess);
+            };
+
+            for (var km = 0; km < initialLength; km++) {
+                var createDate = document.createElement("text");
+                createDate.style.fontSize = "65%";
+                var createDateText = document.createTextNode(window.geemails[km].date);
+                var divId = document.getElementById(km);
+                divId.appendChild(createDate);
+                createDate.appendChild(createDateText);
+            };
+
+            for (var km = 0; km < initialLength; km++) {
+				//                                               ***  unsure if I need to create this twice
+                var createSubject = document.createElement("text");
+                var createSubjectText = document.createTextNode(window.geemails[km].subject);
+                var subjectId = document.getElementById(km);
+                subjectId.appendChild(createSubject);
+                createSubject.appendChild(createSubjectText);
+            };
+
+            mOpen = function(k) {
+                var divOpen = document.getElementById(k);
+                var messageOpen = document.createElement('div');
+                var createMessageText = document.createTextNode(window.geemails[k].body);
+                messageOpen.id = "opened" + k;
+                divOpen.appendChild(messageOpen);
+                messageOpen.appendChild(createMessageText);
+            };
+			
+            mread = function(e) {
+                if (window.geemails[e].mailOpen === true) {
+                    window.geemails[e].mailOpen = false;
+					var mailCloser = document.getElementById("opened" + e);
+                    mailCloser.parentNode.removeChild(mailCloser);
+                } else if (mailCheck.indexOf(e) === -1) {
+                    mailCheck.push(e);
+                    mailCount++;
+                    document.getElementById('main').innerText = "Unread Messages: " + ((window.geemails.length / 2) - mailCount);
+                    window.geemails[e].mailOpen = true;
+                    mOpen(e);
+                } else {
+                    mOpen(e);
+                    window.geemails[e].mailOpen = true;
+                };
+            };
+			
+			setInterval(function(){refreshEmails()}, 10000);
+			
+			var generateEmail = function() {
+				getNewMessage();
+				return newEmail;
+			};
+			
+			// is only using the original 20 objects in messages?
+			var refreshEmails = function (){
+				generateEmail();
+				window.geemails.push(newEmail);
+				nMC++;
+				renderNewEmails();
+			};
+			
+				//                                         *** Consider breaking this all down into functions? Harder to read with more functions?
+			var renderNewEmails = function(){
+				var newDiv = document.createElement('div');
+				newDiv.setAttribute("id", nMC);
+				document.body.appendChild(newDiv);
+				document.getElementById('main').innerHTML += '<p />';
+				//Button
+				var newButton = document.createElement('button');
+				newButton.setAttribute('onclick', "mread(" + nMC + ")");
+				newButtonDiv = document.getElementById(nMC);
+				newButtonDiv.appendChild(newButton);
+				var newButtonText = document.createTextNode(window.geemails[nMC].sender);
+				newButton.appendChild(newButtonText);
+				//Date
+				var newDateNode = document.createElement('text');
+ 				var newDate = document.createTextNode(window.geemails[nMC].date);
+				newDateNode.style.fontSize = "65%";
+				newDiv.appendChild(newDateNode);
+				newDateNode.appendChild(newDate);
+				//Subject
+				var newSubject = document.createElement('text');
+				var newSubjectText = document.createTextNode(window.geemails[nMC].subject);
+				newSubjectId = document.getElementById(nMC);
+				newDiv.appendChild(newSubject);
+				newSubjectId.appendChild(newSubjectText);
+			};
+			};
     </script>
-	</head>
-	<body>
-		<div id="title"><h1>Gee-Mail</h1></div>
-		<div id="top-header"> </div>
-		<div class="container" id="main"></div>
-	</body>
+</head>
+
+<body>
+    <div id="title">
+        <h1>Gee-Mail</h1></div>
+    <div id="top-header"> </div>
+    <div class="container" id="main"></div>
+</body>
+
 </html>
