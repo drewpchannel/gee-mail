@@ -12,18 +12,17 @@
             } 
 
             loadGeeMails();
-            mailCount = 0;
             mailCheck = [];
 			initialLength = window.geemails.length / 2;
 			nMC = 9;
-			newEmail = {};
-
-            document.getElementById('main').innerText = "Unread Messages: " + (window.geemails.length / 2) + " ";
+			oMC = initialLength;
+			
+            document.getElementById('main').innerText = "Unread Messages: " + initialLength;
             for (var km = 0; km < initialLength; km++) {
                 var createDiv = document.createElement("div");
                 createDiv.setAttribute("id", km);
+				createDiv.setAttribute("class", "mainDiv");
                 document.body.appendChild(createDiv);
-                document.getElementById("main").innerHTML += '<p />';
             };
 
             for (var km = 0; km < initialLength; km++) {
@@ -35,28 +34,31 @@
                 divId.appendChild(createButton);
                 createButton.appendChild(createMess);
             };
-
+			
             for (var km = 0; km < initialLength; km++) {
                 var createDate = document.createElement("text");
-                createDate.style.fontSize = "65%";
-                var createDateText = document.createTextNode(window.geemails[km].date);
+				createDate.setAttribute("class", "subjectText");
+                var createDateText = document.createTextNode(" " + window.geemails[km].date + " ");
                 var divId = document.getElementById(km);
                 divId.appendChild(createDate);
                 createDate.appendChild(createDateText);
             };
 
             for (var km = 0; km < initialLength; km++) {
-				//                                               ***  unsure if I need to create this twice
                 var createSubject = document.createElement("text");
+				createSubject.setAttribute('class', 'bodyText');
                 var createSubjectText = document.createTextNode(window.geemails[km].subject);
                 var subjectId = document.getElementById(km);
                 subjectId.appendChild(createSubject);
                 createSubject.appendChild(createSubjectText);
             };
-
+			
+			//                                   *** switch both arguments to e to read easier?
+			
             mOpen = function(k) {
                 var divOpen = document.getElementById(k);
                 var messageOpen = document.createElement('div');
+				messageOpen.setAttribute('class', 'mainText');
                 var createMessageText = document.createTextNode(window.geemails[k].body);
                 messageOpen.id = "opened" + k;
                 divOpen.appendChild(messageOpen);
@@ -70,8 +72,8 @@
                     mailCloser.parentNode.removeChild(mailCloser);
                 } else if (mailCheck.indexOf(e) === -1) {
                     mailCheck.push(e);
-                    mailCount++;
-                    document.getElementById('main').innerText = "Unread Messages: " + ((window.geemails.length / 2) - mailCount);
+                    document.getElementById('main').innerText = "Unread Messages: " + (oMC - 1);
+					oMC--;
                     window.geemails[e].mailOpen = true;
                     mOpen(e);
                 } else {
@@ -80,25 +82,21 @@
                 };
             };
 			
-			setInterval(function(){refreshEmails()}, 10000);
+			setInterval(function(){refreshEmails()}, 5000);
 			
-			var generateEmail = function() {
-				getNewMessage();
-				return newEmail;
-			};
-			
-			// is only using the original 20 objects in messages?
 			var refreshEmails = function (){
-				generateEmail();
-				window.geemails.push(newEmail);
+				window.geemails.push(getNewMessage());
+				oMC++;
 				nMC++;
 				renderNewEmails();
+				document.getElementById('main').innerText = "Unread Messages: " + (oMC) + " ";
 			};
 			
 				//                                         *** Consider breaking this all down into functions? Harder to read with more functions?
 			var renderNewEmails = function(){
 				var newDiv = document.createElement('div');
 				newDiv.setAttribute("id", nMC);
+				newDiv.setAttribute("class", "mainDiv");
 				document.body.appendChild(newDiv);
 				document.getElementById('main').innerHTML += '<p />';
 				//Button
@@ -114,8 +112,10 @@
 				newDateNode.style.fontSize = "65%";
 				newDiv.appendChild(newDateNode);
 				newDateNode.appendChild(newDate);
+				newDateNode.setAttribute('class', 'subjectText');
 				//Subject
 				var newSubject = document.createElement('text');
+				newSubject.setAttribute('class', 'bodyTextN');
 				var newSubjectText = document.createTextNode(window.geemails[nMC].subject);
 				newSubjectId = document.getElementById(nMC);
 				newDiv.appendChild(newSubject);
