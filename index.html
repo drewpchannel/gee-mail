@@ -6,54 +6,89 @@
     <script>
         window.onload = function() {
 
-            usrn = prompt('what is the password?  hint: it is abc');
-            if (usrn === 'abc') {} else {
-                window.close();
-            } 
+        usrn = prompt('what is the password?  hint: it is abc');
+		if (usrn === 'abc') {} else {
+            window.close();
+        } 
 
-            loadGeeMails();
-            mailCheck = [];
-			initialLength = window.geemails.length / 2;
-			nMC = 9;
-			oMC = initialLength;
+        loadGeeMails();
+        mailCheck = [];
+		initialLength = window.geemails.length / 2;
+		firstRun = true;
+		mC = 0;
+		mailTimer = 100;
+		oC = 0;
 			
-            document.getElementById('main').innerText = "Unread Messages: " + initialLength;
-            for (var km = 0; km < initialLength; km++) {
+        document.getElementById('main').innerText = "Unread Messages: " + initialLength;
+			
+		timer = setInterval(function(){mainApp()}, mailTimer);
+		
+		function mainApp() {
+			if (firstRun == true){
+				for (var km = 0; km < initialLength; km++) {
+					createDivs();
+					firstRun = false;
+					createButtons();
+					createDates();
+					createSubjects();
+					mC++;
+					clearInterval(timer);
+					mailTimer = 8000;
+					timer = setInterval(function(){mainApp()}, mailTimer);
+				}
+				
+			oC = mC;
+			
+			}
+			else {
+				refreshEmails();
+				createDivs();
+				createButtons();
+				createDates();
+				createSubjects();
+				mC++;
+			};
+            
+			function createDivs() {
                 var createDiv = document.createElement("div");
-                createDiv.setAttribute("id", km);
+                createDiv.setAttribute("id", mC);
 				createDiv.setAttribute("class", "mainDiv");
                 document.body.appendChild(createDiv);
             };
 
-            for (var km = 0; km < initialLength; km++) {
-                var createButton = document.createElement("button");
-                createButton.setAttribute("onclick", "mread(" + km + ")");
-                var createMess = document.createTextNode(window.geemails[km].sender);
-                window.geemails[km].mailOpen = false;
-                var divId = document.getElementById(km);
+			function createButtons() {
+				var createButton = document.createElement("button");
+                createButton.setAttribute("onclick", "mread(" + mC + ")");
+                var createMess = document.createTextNode(window.geemails[mC].sender);
+                window.geemails[mC].mailOpen = false;
+                var divId = document.getElementById(mC);
                 divId.appendChild(createButton);
                 createButton.appendChild(createMess);
-            };
+			};
 			
-            for (var km = 0; km < initialLength; km++) {
-                var createDate = document.createElement("text");
+			function createDates() {
+				var createDate = document.createElement("text");
 				createDate.setAttribute("class", "subjectText");
-                var createDateText = document.createTextNode(" " + window.geemails[km].date + " ");
-                var divId = document.getElementById(km);
+                var createDateText = document.createTextNode(" " + window.geemails[mC].date + " ");
+                var divId = document.getElementById(mC);
                 divId.appendChild(createDate);
                 createDate.appendChild(createDateText);
-            };
+			};
 
-            for (var km = 0; km < initialLength; km++) {
-                var createSubject = document.createElement("text");
+			function createSubjects() {
+				var createSubject = document.createElement("text");
 				createSubject.setAttribute('class', 'bodyText');
-                var createSubjectText = document.createTextNode(window.geemails[km].subject);
-                var subjectId = document.getElementById(km);
+                var createSubjectText = document.createTextNode(window.geemails[mC].subject);
+                var subjectId = document.getElementById(mC);
                 subjectId.appendChild(createSubject);
                 createSubject.appendChild(createSubjectText);
-            };
+			};
 			
-			//                                   *** switch both arguments to e to read easier?
+			function refreshEmails(){
+				window.geemails.push(getNewMessage());
+				oC++;
+				document.getElementById('main').innerText = "Unread Messages: " + (oC) + " ";
+			};
 			
             mOpen = function(k) {
                 var divOpen = document.getElementById(k);
@@ -71,9 +106,9 @@
 					var mailCloser = document.getElementById("opened" + e);
                     mailCloser.parentNode.removeChild(mailCloser);
                 } else if (mailCheck.indexOf(e) === -1) {
+					oC--;
                     mailCheck.push(e);
-                    document.getElementById('main').innerText = "Unread Messages: " + (oMC - 1);
-					oMC--;
+                    document.getElementById('main').innerText = "Unread Messages: " + (oC);
                     window.geemails[e].mailOpen = true;
                     mOpen(e);
                 } else {
@@ -81,55 +116,18 @@
                     window.geemails[e].mailOpen = true;
                 };
             };
-			
-			setInterval(function(){refreshEmails()}, 5000);
-			
-			var refreshEmails = function (){
-				window.geemails.push(getNewMessage());
-				oMC++;
-				nMC++;
-				renderNewEmails();
-				document.getElementById('main').innerText = "Unread Messages: " + (oMC) + " ";
 			};
-			
-				//                                         *** Consider breaking this all down into functions? Harder to read with more functions?
-			var renderNewEmails = function(){
-				var newDiv = document.createElement('div');
-				newDiv.setAttribute("id", nMC);
-				newDiv.setAttribute("class", "mainDiv");
-				document.body.appendChild(newDiv);
-				document.getElementById('main').innerHTML += '<p />';
-				//Button
-				var newButton = document.createElement('button');
-				newButton.setAttribute('onclick', "mread(" + nMC + ")");
-				newButtonDiv = document.getElementById(nMC);
-				newButtonDiv.appendChild(newButton);
-				var newButtonText = document.createTextNode(window.geemails[nMC].sender);
-				newButton.appendChild(newButtonText);
-				//Date
-				var newDateNode = document.createElement('text');
- 				var newDate = document.createTextNode(window.geemails[nMC].date);
-				newDateNode.style.fontSize = "65%";
-				newDiv.appendChild(newDateNode);
-				newDateNode.appendChild(newDate);
-				newDateNode.setAttribute('class', 'subjectText');
-				//Subject
-				var newSubject = document.createElement('text');
-				newSubject.setAttribute('class', 'bodyTextN');
-				var newSubjectText = document.createTextNode(window.geemails[nMC].subject);
-				newSubjectId = document.getElementById(nMC);
-				newDiv.appendChild(newSubject);
-				newSubjectId.appendChild(newSubjectText);
-			};
-			};
+		};
     </script>
 </head>
 
 <body>
     <div id="title">
         <h1>Gee-Mail</h1></div>
+	</div>
     <div id="top-header"> </div>
     <div class="container" id="main"></div>
+	
 </body>
 
 </html>

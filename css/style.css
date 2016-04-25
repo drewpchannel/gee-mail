@@ -1,3 +1,9 @@
+h1{
+	text-align: center;
+}
+body {
+	background-color: #D6EBF2;
+}
 button {
 	width: 150px;
 }
@@ -6,7 +12,6 @@ button:focus {
 }
 .subjectText {
 	font-size: 12px;
-	max-width: 400px;
 	display: block;
 	padding: 6px;
 }
@@ -24,7 +29,14 @@ button:focus {
 }
 .container {
 	padding: 20px;
-	
+	height: 20px;
+	width: 190px;
+	border-style: solid;
+	border-color: black;
+	background-color: #D3D3D3;
+	position: fixed;
+	right: 25px;
+	font-size: 21px;
 }
 .mainDiv {
 	padding-top: 10px;
@@ -32,4 +44,21 @@ button:focus {
 	border-color: black;
 	border-width: 1px;
 	width: 500px;
+	background-color: white;
+}
+#settCanv{
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+#prepCanv{
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	width: 20px;
+	height: 20px;
+}
+#setInput{
+	width: 90px;
+	height: 15px;
 }
